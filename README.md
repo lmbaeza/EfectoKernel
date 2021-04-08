@@ -31,3 +31,7 @@ $ sudo chmod 777 run.sh
 ```shell
 $ ./run.sh
 ```
+o Para `debugging`
+```shell
+$ ./run.sh --debug
+```
