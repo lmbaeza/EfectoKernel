@@ -23,6 +23,7 @@ $ git clone --single-branch --branch=develop https://github.com/lmbaeza/EfectoKe
 
 * Darle permiso de Ejecución
 ```shell
+$ cd EfectoKernel
 $ sudo chmod 777 run.sh 
 ```
 
