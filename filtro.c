@@ -8,16 +8,7 @@ char* IMAGEN_SALIDA;
 int ARG;
 int NUM_HILOS;
 
-
-int cmp(const void *_a, const void *_b) {
-    float *a, *b;
-    a = (float*) _a;
-    b = (float*) _b;
-    return (*a - *b);
-}
-
 #define eps  0.000000001
-
 int compare(const void *_a, const void *_b) {
     float *a, *b;
     a = (float*) _a;
