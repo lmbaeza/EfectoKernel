@@ -21,4 +21,4 @@ fi
 echo " "
 
 # Ejecutar
-./filtro.o img/input.png img/output.png 15 4
+time ./filtro.o img/input.png img/output.png 15 4
