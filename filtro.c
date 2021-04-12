@@ -23,5 +23,25 @@ int main(int argc, char *argv[]) {
 
     // TODO:
 
+    sod_img imgIn = sod_img_load_from_file(IMAGEN_ENTRADA, SOD_IMG_COLOR);
+
+    if (imgIn.data == 0) {
+		// Validar que la imagen exista
+		printf("No pudo cargar la imagen %s\n", IMAGEN_ENTRADA);
+		return 0;
+	}
+
+    // Modificar la imagen
+    for(int i = 0; i  < 100; ++i) {
+        for(int j = 0; j < 100; ++j) {
+            sod_img_set_pixel(imgIn, i, i+j, 0, 0.3434);
+        }
+    }
+
+	sod_img_save_as_png(imgIn, IMAGEN_SALIDA);
+
+    // Liberar la Memoria
+	sod_free_image(imgIn);
+
     return 0;
 }

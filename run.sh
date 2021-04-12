@@ -18,5 +18,7 @@ else
     gcc sod.o -lm -Ofast -march=native -std=c11 -o filtro.o filtro.c
 fi
 
+echo " "
+
 # Ejecutar
-./filtro.o input.png output.png 15 4
+./filtro.o img/input.png img/output.png 15 4
