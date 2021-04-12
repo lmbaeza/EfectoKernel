@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "sod/sod.h"
+
 char* IMAGEN_ENTRADA;
 char* IMAGEN_SALIDA;
 int ARG;
@@ -10,7 +12,7 @@ int main(int argc, char *argv[]) {
 
     if(argc != 5) {
         printf("Debe proporcionar 4 argumentos: [imagen de entrada] [imagen de salida] [argumento del filtro] [numero de hilos]");
-        // Ejemplo: ./filtro miImagen.png miImagen_output.png 15 4
+        // Ejemplo: ./filtro.o input.png output.png 15 4
         exit(0);
     }
     IMAGEN_ENTRADA = argv[1];
