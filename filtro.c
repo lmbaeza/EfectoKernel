@@ -38,13 +38,14 @@ int main(int argc, char *argv[]) {
 
     printf("Tamaño de la Imange %dx%d\n", imgIn.w, imgIn.h);
 
-    for(int i = 0; i < imgIn.w/2; ++i) {
+    for(int i = 0; i < imgIn.w; ++i) {
         for(int j = 0; j < imgIn.h; ++j) {
             float R = sod_img_get_pixel(imgIn, i, j, 0);
             float G = sod_img_get_pixel(imgIn, i, j, 1);
             float B = sod_img_get_pixel(imgIn, i, j, 2);
-
+            
             float mean = (R+G+B) / 3.0;
+
             sod_img_set_pixel(imgIn, i, j, 0, mean);
             sod_img_set_pixel(imgIn, i, j, 1, mean);
             sod_img_set_pixel(imgIn, i, j, 2, mean);
