@@ -27,6 +27,12 @@ $ cd EfectoKernel
 $ sudo chmod 777 run.sh 
 ```
 
+# Descargar Libreria
+
+```shell
+$ ./run.sh --init
+```
+
 # Ejecutar
 
 ```shell
