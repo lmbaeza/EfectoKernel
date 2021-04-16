@@ -9,6 +9,10 @@ char* IMAGEN_SALIDA;
 int ARG;
 int NUM_HILOS;
 
+int kernel[3][3] = {{-1,-1,-1},
+                    {-1, 8,-1},
+                    {-1,-1,-1}};
+
 int main(int argc, char *argv[]) {
 
     if(argc != 5) {
@@ -38,17 +42,16 @@ int main(int argc, char *argv[]) {
 
     printf("Tamaño de la Imange %dx%d\n", imgIn.w, imgIn.h);
 
-    for(int i = 0; i < imgIn.w; ++i) {
-        for(int j = 0; j < imgIn.h; ++j) {
-            float R = sod_img_get_pixel(imgIn, i, j, 0);
-            float G = sod_img_get_pixel(imgIn, i, j, 1);
-            float B = sod_img_get_pixel(imgIn, i, j, 2);
-            
-            float mean = (R+G+B) / 3.0;
-
-            sod_img_set_pixel(imgIn, i, j, 0, mean);
-            sod_img_set_pixel(imgIn, i, j, 1, mean);
-            sod_img_set_pixel(imgIn, i, j, 2, mean);
+    for(int y = 0; y < imgIn.w; ++y) {
+        for(int x = 0; x < imgIn.h; ++x) {
+            float sum = 0;
+            for(int ky; ky < -1; ++ky){
+                for(int kx; kx < -1; ++kx){
+                    float val = sod_img_get_pixel(imgIn, x,y, 0);
+                    sum += kernel[ky+1][kx+1]* val;
+                }
+            }
+            sod_img_set_pixel(imgIn, x, y, 0, sum);            
         }
     }
 
