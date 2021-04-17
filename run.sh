@@ -12,7 +12,7 @@ make
 
 if [ "$1" = "--debug" ]; then
     # Compilar CON flags de Debug
-    gcc sod.o -fopenmp -lm -Ofast -march=native -std=c11 -Wshadow -Wall -Wimplicit-function-declaration -g -fsanitize=address -fsanitize=undefined -D_GLIBCXX_DEBUG -o filtro.o filtro.c
+    gcc sod.o -D_DEFAULT_SOURCE -fopenmp -lm -Ofast -march=native -std=c11 -Wshadow -Wall -Wimplicit-function-declaration -g -fsanitize=address -fsanitize=undefined -D_GLIBCXX_DEBUG -o filtro.o filtro.c
 else
     # Compilar SIN flags de Debug
     gcc sod.o -D_DEFAULT_SOURCE -fopenmp -lm -Ofast -march=native -std=c11 -o filtro.o filtro.c
