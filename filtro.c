@@ -31,16 +31,33 @@ void * filter(void * arg) {
 
     for(int y = from; y <= to; ++y) {
         for(int x = 1; x < imgIn.w-1; ++x) {
+
             float sum = 0.0;
+            // Iterar la matrix 3x3 kernel
             for(int ky = -1; ky <= 1; ++ky){
                 for(int kx = -1; kx <= 1; ++kx){
-                    float val = sod_img_get_pixel(imgIn, x+kx, y+ky, 0);
+                    // Obtener pixel (Red) en la coordenada (x+kx, y+ky)
+                    float val = sod_img_get_pixel(imgIn, x+kx, y+ky, 0); // R
                     sum += kernel[ky+1][kx+1] * val;
+
+                    //  kernel       pixeles de la imagen, px=Pixel
+
+                    // [k1 k2 k3]    [px1 px2 px3]
+                    // [k4 k5 k6]    [px4 px5 px6]
+                    // [k7 k8 k9]    [px7 px8 px9]
+
+                    // sum = k1*px1 + k2*px2 + ... + k9*px9
                 }
             }
-            sod_img_set_pixel(imgOut, x, y, 0, abs(sum));            
-            sod_img_set_pixel(imgOut, x, y, 1, abs(sum));            
-            sod_img_set_pixel(imgOut, x, y, 2, abs(sum));            
+
+            // Cambiar el pixel (Red) de la coordenada (x, y)
+            sod_img_set_pixel(imgOut, x, y, 0, abs(sum)); // R
+
+            // Cambiar el pixel (Green) de la coordenada (x, y)
+            sod_img_set_pixel(imgOut, x, y, 1, abs(sum)); // G
+
+            // Cambiar el pixel (Blue) de la coordenada (x, y)
+            sod_img_set_pixel(imgOut, x, y, 2, abs(sum)); // B
         }
     }
     return 0;
@@ -49,16 +66,19 @@ void * filter(void * arg) {
 int main(int argc, char *argv[]) {
     if(argc < 5) {
         printf("Debe proporcionar 4 argumentos: [imagen de entrada] [imagen de salida] [argumento del filtro] [numero de hilos]");
-        // Ejemplo: ./filtro.o input.png output.png 15 4
+        // Ejemplo: ./filtro.o img/input1.png img/output1.png 8 16
         exit(0);
     }
     // Ruta de la imagen de entrada: Ej: img/input1.png
     IMAGEN_ENTRADA = argv[1];
+
     // Ruta de la imagen de salida: Ej: img/output1.png
     IMAGEN_SALIDA = argv[2];
+
     // Argumento del filtro: Ej 8
-    ARG = atoi(argv[3]);
+    ARG = atof(argv[3]);
     kernel[1][1] = ARG;
+
     // Numero de hilos utilizados
     NUM_HILOS = atoi(argv[4]);
 
