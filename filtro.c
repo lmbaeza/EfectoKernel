@@ -2,6 +2,10 @@
 #include <stdlib.h>
 #include <math.h>
 
+#include <unistd.h>
+#include <pthread.h>
+#include <sys/time.h>
+
 #include "sod/sod.h"
 
 char* IMAGEN_ENTRADA;
@@ -10,40 +14,22 @@ int ARG;
 int NUM_HILOS;
 
 float kernel[3][3] = {{-1,-1,-1}, 
-                    {-1, 8,-1},
-                    {-1,-1,-1}};
+                      {-1, 8,-1},
+                      {-1,-1,-1}};
 
-int main(int argc, char *argv[]) {
+int intervalo[16][2]; // El i-th hilo vá desde el intervalo intervalo[i][0] hasta intervalo[i][1]
+ 
+sod_img imgIn;
+sod_img imgOut;
 
-    if(argc != 5) {
-        printf("Debe proporcionar 4 argumentos: [imagen de entrada] [imagen de salida] [argumento del filtro] [numero de hilos]");
-        // Ejemplo: ./filtro.o input.png output.png 15 4
-        exit(0);
-    }
-    IMAGEN_ENTRADA = argv[1];
-    IMAGEN_SALIDA = argv[2];
-    ARG = atoi(argv[3]);
-    NUM_HILOS = atoi(argv[4]);
-    printf("%s %s %i %i\n", IMAGEN_ENTRADA, IMAGEN_SALIDA, ARG, NUM_HILOS);
+void * filter(void * arg) {
+    // Id del Hilo
+    int threadId = *(int*) arg;
+    // Obtener intervalo, desde-hasta
+    int from = intervalo[threadId][0];
+    int to = intervalo[threadId][1];
 
-    // TODO:
-
-    sod_img imgIn = sod_img_load_from_file(IMAGEN_ENTRADA, SOD_IMG_COLOR);
-    sod_img imgOut = sod_img_load_from_file(IMAGEN_ENTRADA, SOD_IMG_COLOR);
-
-    if (imgIn.data == 0) {
-        // Validar que la imagen exista
-        printf("No pudo cargar la imagen %s\n", IMAGEN_ENTRADA);
-        return 0;
-    }
-
-    // Modificar la imagen
-    const int TAM_COLORES = 9;
-    float colores[9];
-
-    printf("Tamaño de la Imange %dx%d\n", imgIn.w, imgIn.h);
-
-    for(int y = 1; y < imgIn.h-1; ++y) {
+    for(int y = from; y <= to; ++y) {
         for(int x = 1; x < imgIn.w-1; ++x) {
             float sum = 0.0;
             for(int ky = -1; ky <= 1; ++ky){
@@ -57,12 +43,81 @@ int main(int argc, char *argv[]) {
             sod_img_set_pixel(imgOut, x, y, 2, abs(sum));            
         }
     }
+    return 0;
+}
 
+int main(int argc, char *argv[]) {
+    if(argc < 5) {
+        printf("Debe proporcionar 4 argumentos: [imagen de entrada] [imagen de salida] [argumento del filtro] [numero de hilos]");
+        // Ejemplo: ./filtro.o input.png output.png 15 4
+        exit(0);
+    }
+    // Ruta de la imagen de entrada: Ej: img/input1.png
+    IMAGEN_ENTRADA = argv[1];
+    // Ruta de la imagen de salida: Ej: img/output1.png
+    IMAGEN_SALIDA = argv[2];
+    // Argumento del filtro: Ej 8
+    ARG = atoi(argv[3]);
+    kernel[1][1] = ARG;
+    // Numero de hilos utilizados
+    NUM_HILOS = atoi(argv[4]);
+
+    // Cargar Imagen en memoria
+    imgIn = sod_img_load_from_file(IMAGEN_ENTRADA, SOD_IMG_COLOR);
+    imgOut = sod_img_load_from_file(IMAGEN_ENTRADA, SOD_IMG_COLOR);
+
+    if (imgIn.data == 0) {
+        // Validar que la imagen exista
+        printf("No pudo cargar la imagen %s\n", IMAGEN_ENTRADA);
+        return 0;
+    }
+
+    // Definir intervalos para NUM_HILOS hilos
+    int factor = imgIn.h / NUM_HILOS;
+    int last = 1;
+    for(int i = 0; i < NUM_HILOS; ++i) {
+        intervalo[i][0] = last;
+        if(i != (NUM_HILOS-1)) {
+            intervalo[i][1] = last + factor-1;
+        } else {
+            intervalo[i][1] = imgIn.h - 1;
+        }
+        last = intervalo[i][1] + 1;
+    }
+
+    // Crear los Hilos
+    int threadId[NUM_HILOS];
+    pthread_t thread[NUM_HILOS];
+
+    // Definir variables para medir el tiempo de ejecucion
+    struct timeval tval_before, tval_after, tval_result;
+    gettimeofday(&tval_before, NULL);
+    
+    // Crear los hilos
+    for(int i = 0; i < NUM_HILOS; i++){
+        threadId[i] = i;
+        pthread_create(&thread[i], NULL, (void *)filter, &threadId[i]);
+    }
+
+    // Unir los hiloas
+    int *retval;
+    for(int i = 0; i < NUM_HILOS; i++){
+        pthread_join(thread[i], (void **)&retval);
+    }
+
+    // Medir el tiempo
+    gettimeofday(&tval_after, NULL);
+    timersub(&tval_after, &tval_before, &tval_result);
+    
+    // Guardar la Imagen
     sod_img_save_as_png(imgOut, IMAGEN_SALIDA);
 
     // Liberar la Memoria
     sod_free_image(imgIn);
     sod_free_image(imgOut);
+
+    // Mostrar el tiempo de ejecución
+    printf("Time elapsed: %ld.%06ld\n", (long int) tval_result.tv_sec, (long int) tval_result.tv_usec);
 
     return 0;
 }
