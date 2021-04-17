@@ -21,7 +21,6 @@ fi
 echo " "
 
 # Ejecutar
-time ./filtro.o img/input.png img/output.png 15 4
-
-
-# time ./filtro.o img/input.jpg img/output1.png 15 4
+time ./filtro.o img/input1.png img/output1.png 15 4
+time ./filtro.o img/input2.png img/output2.png 15 4
+time ./filtro.o img/input3.png img/output3.png 15 4

@@ -9,7 +9,7 @@ char* IMAGEN_SALIDA;
 int ARG;
 int NUM_HILOS;
 
-int kernel[3][3] = {{-1,-1,-1},
+float kernel[3][3] = {{-1,-1,-1}, 
                     {-1, 8,-1},
                     {-1,-1,-1}};
 
@@ -29,6 +29,7 @@ int main(int argc, char *argv[]) {
     // TODO:
 
     sod_img imgIn = sod_img_load_from_file(IMAGEN_ENTRADA, SOD_IMG_COLOR);
+    sod_img imgOut = sod_img_load_from_file(IMAGEN_ENTRADA, SOD_IMG_COLOR);
 
     if (imgIn.data == 0) {
         // Validar que la imagen exista
@@ -42,24 +43,26 @@ int main(int argc, char *argv[]) {
 
     printf("Tamaño de la Imange %dx%d\n", imgIn.w, imgIn.h);
 
-    for(int y = 0; y < imgIn.w; ++y) {
-        for(int x = 0; x < imgIn.h; ++x) {
-            float sum = 0;
-            for(int ky; ky < -1; ++ky){
-                for(int kx; kx < -1; ++kx){
-                    float val = sod_img_get_pixel(imgIn, x,y, 0);
-                    sum += kernel[ky+1][kx+1]* val;
+    for(int y = 1; y < imgIn.h-1; ++y) {
+        for(int x = 1; x < imgIn.w-1; ++x) {
+            float sum = 0.0;
+            for(int ky = -1; ky <= 1; ++ky){
+                for(int kx = -1; kx <= 1; ++kx){
+                    float val = sod_img_get_pixel(imgIn, x+kx, y+ky, 0);
+                    sum += kernel[ky+1][kx+1] * val;
                 }
             }
-            sod_img_set_pixel(imgIn, x, y, 0, sum);            
+            sod_img_set_pixel(imgOut, x, y, 0, abs(sum));            
+            sod_img_set_pixel(imgOut, x, y, 1, abs(sum));            
+            sod_img_set_pixel(imgOut, x, y, 2, abs(sum));            
         }
     }
 
-    // sod_img_save_as_png(imgIn, IMAGEN_SALIDA);
-    sod_img_save_as_png(imgIn, IMAGEN_SALIDA);
+    sod_img_save_as_png(imgOut, IMAGEN_SALIDA);
 
     // Liberar la Memoria
     sod_free_image(imgIn);
+    sod_free_image(imgOut);
 
     return 0;
 }
