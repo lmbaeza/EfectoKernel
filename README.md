@@ -36,9 +36,11 @@ $ ./run.sh --init
 # Ejecutar
 
 ```shell
-$ ./run.sh
+$ ./run.sh 4
+# ./run.sh [number of threads]
 ```
 o Para `debugging`
 ```shell
-$ ./run.sh --debug
+$ ./run.sh --debug 4
+# ./run.sh --debug [number of threads]
 ```
