@@ -27,11 +27,17 @@ else
     fi
 fi
 
-echo " $threads"
+echo " "
+echo "Running using $threads threads ..."
+echo " "
 
 # Ejecutar
 
 # [imagen de entrada] [imagen de salida] [argumento del filtro] [numero de hilos]
-./filtro.o img/input1.png img/output1.png 8 $threads
-./filtro.o img/input2.png img/output2.png 8 $threads
-./filtro.o img/input3.png img/output3.png 8 $threads
+./filtro.o img/input1.png img/output1.png 8 $threads >> tmp.log
+./filtro.o img/input2.png img/output2.png 8 $threads >> tmp.log
+./filtro.o img/input3.png img/output3.png 8 $threads >> tmp.log
+cat tmp.log
+cat tmp.log >> cache.log
+rm -f tmp.log
+echo "#######################################" >> cache.log

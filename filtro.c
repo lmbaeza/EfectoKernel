@@ -137,7 +137,7 @@ int main(int argc, char *argv[]) {
     sod_free_image(imgOut);
 
     // Mostrar el tiempo de ejecución
-    printf("Time elapsed: %ld.%06ld\n", (long int) tval_result.tv_sec, (long int) tval_result.tv_usec);
+    printf("Time elapsed: %ld.%06ld using %d threads\n", (long int) tval_result.tv_sec, (long int) tval_result.tv_usec, NUM_HILOS);
 
     return 0;
 }
