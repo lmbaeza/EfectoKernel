@@ -28,11 +28,12 @@ else
 fi
 
 echo " "
-echo "Running using $threads threads ..."
+echo "OpenMP - Running using $threads threads..."
 echo " "
 
 # Ejecutar
 
+echo "OpenMP ($threads threads)" >> tmp.log
 # [imagen de entrada] [imagen de salida] [argumento del filtro] [numero de hilos]
 ./open_mp_filtro.o img/input1.png img/output1.png 8 $threads >> tmp.log
 ./open_mp_filtro.o img/input2.png img/output2.png 8 $threads >> tmp.log

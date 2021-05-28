@@ -1,4 +1,10 @@
-Time elapsed: 0.059796 using 16 threads
-Time elapsed: 0.137675 using 16 threads
-Time elapsed: 0.589289 using 16 threads
+OpenMP (16 threads)
+Time elapsed: 0.056082 using 16 threads
+Time elapsed: 0.126933 using 16 threads
+Time elapsed: 0.543900 using 16 threads
+#######################################
+POSIX (16 threads)
+Time elapsed: 0.059727 using 16 threads
+Time elapsed: 0.135141 using 16 threads
+Time elapsed: 0.558173 using 16 threads
 #######################################

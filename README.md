@@ -16,31 +16,46 @@ Procesar el filtro Kernel utilizando Computación Paralela
 
 # Descargar
 
-* Descargar Rama `develop`
+* Descargar Rama `main`
 ```shell
-$ git clone --single-branch --branch=develop https://github.com/lmbaeza/EfectoKernel.git
+$ git clone https://github.com/lmbaeza/EfectoKernel.git
 ```
 
 * Darle permiso de Ejecución
 ```shell
 $ cd EfectoKernel
-$ sudo chmod 777 run.sh 
+$ sudo chmod 777 run_posix.sh 
+$ sudo chmod 777 run_openmp.sh 
 ```
 
 # Descargar Libreria
 
 ```shell
-$ ./run.sh --init
+$ ./run_posix.sh --init
+o
+$ ./run_openmp.sh --init
 ```
 
-# Ejecutar
+# Ejecutar Posix
 
 ```shell
-$ ./run.sh 4
-# ./run.sh [number of threads]
+$ ./run_posix.sh 4
+# ./run_posix.sh [number of threads]
 ```
 o Para `debugging`
 ```shell
-$ ./run.sh --debug 4
-# ./run.sh --debug [number of threads]
+$ ./run_posix.sh --debug 4
+# ./run_posix.sh --debug [number of threads]
+```
+
+# Ejecutar OpenMP
+
+```shell
+$ ./run_openmp.sh 4
+# ./run_openmp.sh [number of threads]
+```
+o Para `debugging`
+```shell
+$ ./run_openmp.sh --debug 4
+# ./run_openmp.sh --debug [number of threads]
 ```
