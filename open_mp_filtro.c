@@ -120,6 +120,13 @@ int main(int argc, char *argv[]) {
  
     timersub(&tval_after, &tval_before, &tval_result);
 
+    // Guardar la Imagen
+    sod_img_save_as_png(imgOut, IMAGEN_SALIDA);
+
+    // Liberar la Memoria
+    sod_free_image(imgIn);
+    sod_free_image(imgOut);
+
     // Mostrar el tiempo de ejecución
     printf("Time elapsed: %ld.%06ld using %d threads\n", (long int) tval_result.tv_sec, (long int) tval_result.tv_usec, NUM_HILOS);
 

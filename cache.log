@@ -8,3 +8,76 @@ Time elapsed: 0.059727 using 16 threads
 Time elapsed: 0.135141 using 16 threads
 Time elapsed: 0.558173 using 16 threads
 #######################################
+OpenMP (0 threads)
+#######################################
+OpenMP (1 threads)
+Time elapsed: 0.125593 using 1 threads
+Time elapsed: 0.267694 using 1 threads
+Time elapsed: 1.145523 using 1 threads
+#######################################
+OpenMP (16 threads)
+Time elapsed: 0.056313 using 16 threads
+Time elapsed: 0.127792 using 16 threads
+Time elapsed: 0.545158 using 16 threads
+#######################################
+POSIX (16 threads)
+Time elapsed: 0.060621 using 16 threads
+Time elapsed: 0.132955 using 16 threads
+Time elapsed: 0.561206 using 16 threads
+#######################################
+OpenMP (16 threads)
+Time elapsed: 0.064872 using 16 threads
+Time elapsed: 0.136175 using 16 threads
+Time elapsed: 0.582494 using 16 threads
+#######################################
+OpenMP (16 threads)
+Time elapsed: 0.061385 using 16 threads
+Time elapsed: 0.139005 using 16 threads
+Time elapsed: 0.588840 using 16 threads
+#######################################
+POSIX (16 threads)
+Time elapsed: 0.065750 using 16 threads
+Time elapsed: 0.142760 using 16 threads
+Time elapsed: 0.702560 using 16 threads
+#######################################
+OpenMP (16 threads)
+Time elapsed: 0.067917 using 16 threads
+Time elapsed: 0.167972 using 16 threads
+Time elapsed: 0.639277 using 16 threads
+#######################################
+CUDA (4 threads)
+#######################################
+CUDA (4 threads)
+#######################################
+CUDA (4 threads)
+w=1280 h=720
+Time elapsed: 0.000000 using 4 threads
+w=1920 h=1080
+Time elapsed: 0.000000 using 4 threads
+w=4096 h=2160
+Time elapsed: 0.000000 using 4 threads
+#######################################
+CUDA (4 threads)
+w=1280 h=720
+Time elapsed: 0.000000 using 4 threads
+w=1920 h=1080
+Time elapsed: 0.000000 using 4 threads
+w=4096 h=2160
+Time elapsed: 0.000000 using 4 threads
+#######################################
+CUDA (4 threads)
+w=1280 h=720
+Time elapsed: 0.000000 using 4 threads
+w=1920 h=1080
+Time elapsed: 0.000000 using 4 threads
+w=4096 h=2160
+Time elapsed: 0.000000 using 4 threads
+#######################################
+CUDA (4 threads)
+w=1280 h=720
+Time elapsed: 0.000000 using 4 threads
+w=1920 h=1080
+Time elapsed: 0.000000 using 4 threads
+w=4096 h=2160
+Time elapsed: 0.000000 using 4 threads
+#######################################

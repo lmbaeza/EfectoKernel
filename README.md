@@ -59,3 +59,17 @@ o Para `debugging`
 $ ./run_openmp.sh --debug 4
 # ./run_openmp.sh --debug [number of threads]
 ```
+
+# Instalar e Ejecutar `Cuda`
+
+Instalar
+
+```shell
+$ ./run_cuda.sh --init
+```
+
+Ejecutar
+
+```shell
+$ ./run_cuda.sh
+```
