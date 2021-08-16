@@ -34,7 +34,9 @@ echo "MPI ($process process)" >> tmp.log
 
 # mpirun -np $process ./mpi_filtro img/input1.png img/output1.png 8
 
-mpirun -np $process ./mpi_filtro img/input1.png img/output1.png 8
+time mpirun -np $process ./mpi_filtro img/input1.png img/output1.png 8
+time mpirun -np $process ./mpi_filtro img/input2.png img/output2.png 8
+time mpirun -np $process ./mpi_filtro img/input3.png img/output3.png 8
 
 cat tmp.log
 cat tmp.log >> cache.log
