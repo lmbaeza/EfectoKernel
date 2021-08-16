@@ -21,7 +21,7 @@ float kernel[3][3] = {{-1,-1,-1},
                       {-1, 8,-1},
                       {-1,-1,-1}};
 
-#define N 4096
+#define N (4096+10)
 
 float image[N][N];
 float image_out[N][N];
@@ -33,7 +33,7 @@ int intervalo[MAX_INTERVAL][2]; // El i-th hilo vá desde el intervalo intervalo
 
 float** alloc_2d_int(int rows, int cols) {
     float** array = (float**) malloc(N * sizeof(float*));
-    for(int i = 0; i < N; ++i) array[i] = (float*) malloc(N*sizeof(float*));
+    for(int i = 0; i < N; ++i) array[i] = (float*) malloc(N*sizeof(float));
 
     for(int i = 0; i < N; i++)
         for(int j = 0; j < N; ++j)
@@ -52,7 +52,7 @@ int main(int argc, char *argv[]) {
 
     if(argc < 4) {
         printf("Debe proporcionar 4 argumentos: [imagen de entrada] [imagen de salida] [argumento del filtro]");
-        // Ejemplo: ./filtro.o img/input1.png img/output1.png 8 16
+        // Ejemplo: ./filtro.o img/input1.png img/output1.png 8
         exit(0);
     }
 
@@ -79,8 +79,12 @@ int main(int argc, char *argv[]) {
 
     // printf("[Debug] tasks=%d, current_id=%d\n", tasks, current_id);
 
-    int h = 1024;
-    int w = 1024;
+    for(int i = 0; i < N; ++i)
+        for(int j = 0; j < N; ++j)
+            image_out[i][j] = 0.0;
+
+    int h = N;
+    int w = N;
     
     if(is_root(current_id)) {
 
@@ -121,7 +125,7 @@ int main(int argc, char *argv[]) {
         sod_free_image(imgIn);
     }
 
-    printf("h=%d, w=%d", h, w);
+    printf("h=%d, w=%d\n", h, w);
     
 
     if(is_root(current_id)) {
@@ -145,37 +149,43 @@ int main(int argc, char *argv[]) {
         for(int i = 1; i < tasks; ++i) {
             int from = intervalo[i][0];
             int to = intervalo[i][1];
+            
+            for(int i = 0; i < N; ++i) {
+                for(int j = 0; j < N; ++j) {
+                    board[i][j] = 1.0;
+                }
+            }
 
             MPI_Recv(&(board[0][0]), N*N, MPI_FLOAT, i, tag, MPI_COMM_WORLD, &status);
             printf("[Root] Recv Board\n");
 
-            /*for(int i = 0; i < N; ++i) {
-                for(int j = 0; j < N; ++j) {
-                    board[i][j] = 0.0;
-                }
-            }*/
             for(int y = from; y <= to; ++y) {
-                for(int x = 0; x < w; ++x) {
+                for(int x = 1; x < N-1; ++x) {
                     image_out[x][y] = board[x][y];
                 }
             }
             printf("[Root] Terminó el procesamiento\n");
         }
+
+        // Free Memory
+        for(int i = 0; i < N; ++i) {
+            float* tmp1 = board[i];
+            free(tmp1);
+        }
     }
-    
     
     int from, to, maxi;
 
     float** board = (float**) malloc(N * sizeof(float*));
-    for(int i = 0; i < N; ++i) board[i] = (float*) malloc(N*sizeof(float*));
+    for(int i = 0; i < N; ++i) board[i] = (float*) malloc(N*sizeof(float));
 
     float** board_output = (float**) malloc(N * sizeof(float*));
-    for(int i = 0; i < N; ++i) board_output[i] = (float*) malloc(N*sizeof(float*));
+    for(int i = 0; i < N; ++i) board_output[i] = (float*) malloc(N*sizeof(float));
 
     for(int i = 0; i < N; ++i)
         for(int j = 0; j < N; ++j) {
-            board[i][j] = 0.0;
-            board_output[i][j] = 0.0;
+            board[i][j] = 1.0;
+            board_output[i][j] = 1.0;
         }
     
     if(is_node(current_id)) {
@@ -184,7 +194,7 @@ int main(int argc, char *argv[]) {
         from = limits[0];
         to = limits[1];
         maxi = limits[2];
-        printf("[Node] Recv limits{%d, %d}\n", from, to);
+        printf("[Node] Recv limits{%d, %d, %d}\n", from, to, maxi);
     } else if(is_root(current_id)) {
         from = intervalo[root][0];
         to = intervalo[root][1];
@@ -202,10 +212,7 @@ int main(int argc, char *argv[]) {
     
     for(int y = from; y <= to; ++y) {
         for(int x = 1; x < maxi-1; ++x) {
-
             float sum = 0.0;
-            int is_good = 1;
-            
             for(int ky = -1; ky <= 1; ++ky) {
                 for(int kx = -1; kx <= 1; ++kx) {
                     // Obtener pixel (Red) en la coordenada (x+kx, y+ky)
