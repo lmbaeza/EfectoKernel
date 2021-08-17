@@ -34,10 +34,19 @@ echo "MPI ($process process)" >> tmp.log
 
 # mpirun -np $process ./mpi_filtro img/input1.png img/output1.png 8
 
-time mpirun -np $process ./mpi_filtro img/input1.png img/output1.png 8
-time mpirun -np $process ./mpi_filtro img/input2.png img/output2.png 8
-time mpirun -np $process ./mpi_filtro img/input3.png img/output3.png 8
+echo " "
+echo "MPI - Imagen 720P"
+/usr/bin/time --format="%E real" mpirun -np $process ./mpi_filtro img/input1.png img/output1.png 8
 
+echo " "
+echo "MPI - Imagen 1080P"
+/usr/bin/time --format="%E real" mpirun -np $process ./mpi_filtro img/input2.png img/output2.png 8
+
+echo " "
+echo "MPI - Imagen 4K"
+/usr/bin/time --format="%E real" mpirun -np $process ./mpi_filtro img/input3.png img/output3.png 8
+
+echo " "
 cat tmp.log
 cat tmp.log >> cache.log
 rm -f tmp.log

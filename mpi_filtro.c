@@ -125,9 +125,6 @@ int main(int argc, char *argv[]) {
         sod_free_image(imgIn);
     }
 
-    printf("h=%d, w=%d\n", h, w);
-    
-
     if(is_root(current_id)) {
 
         float** board = alloc_2d_int(w, h);
@@ -139,10 +136,10 @@ int main(int argc, char *argv[]) {
             int maxi = w;
 
             int limits[3] = {from, to, maxi};
-            printf("[Root] Send: %d %d\n", from, to);
+            // Enviar Limites
             MPI_Send(&(limits[0]), 3, MPI_INT, i, tag, MPI_COMM_WORLD);
 
-            printf("[Root] Send Board\n");
+            // Enviar la Imagen
             MPI_Send(&(board[0][0]), N*N, MPI_FLOAT, i, tag, MPI_COMM_WORLD);
         }
 
@@ -156,15 +153,15 @@ int main(int argc, char *argv[]) {
                 }
             }
 
+            // Recibir la imange con el filtro
             MPI_Recv(&(board[0][0]), N*N, MPI_FLOAT, i, tag, MPI_COMM_WORLD, &status);
-            printf("[Root] Recv Board\n");
 
+            // Copiar la imagen en image_out
             for(int y = from; y <= to; ++y) {
                 for(int x = 1; x < N-1; ++x) {
                     image_out[x][y] = board[x][y];
                 }
             }
-            printf("[Root] Terminó el procesamiento\n");
         }
 
         // Free Memory
@@ -176,12 +173,15 @@ int main(int argc, char *argv[]) {
     
     int from, to, maxi;
 
+    // Asignar Memoria para guardar la imagen de entrada
     float** board = (float**) malloc(N * sizeof(float*));
     for(int i = 0; i < N; ++i) board[i] = (float*) malloc(N*sizeof(float));
 
+    // Asignar Memoria para guardar la imagen de salida
     float** board_output = (float**) malloc(N * sizeof(float*));
     for(int i = 0; i < N; ++i) board_output[i] = (float*) malloc(N*sizeof(float));
 
+    // Inicializar las matrices con un color blanco
     for(int i = 0; i < N; ++i)
         for(int j = 0; j < N; ++j) {
             board[i][j] = 1.0;
@@ -189,26 +189,29 @@ int main(int argc, char *argv[]) {
         }
     
     if(is_node(current_id)) {
+        // Recibir los limites de la imagen
         int limits[3];
         MPI_Recv(&(limits[0]), 3, MPI_INT, root, tag, MPI_COMM_WORLD, &status);
         from = limits[0];
         to = limits[1];
         maxi = limits[2];
-        printf("[Node] Recv limits{%d, %d, %d}\n", from, to, maxi);
     } else if(is_root(current_id)) {
+        // inicializar los limites (Unicamente para la Raiz)
         from = intervalo[root][0];
         to = intervalo[root][1];
         maxi = w;
     }
 
     if(is_node(current_id)) {
+        // Recibir la imagen (Todos los nodos, menos la raiz)
         MPI_Recv(&(board[0][0]), N*N, MPI_FLOAT, root, tag, MPI_COMM_WORLD, &status);
-        printf("[Node] Recv Board\n");
     } else if(is_root(current_id)) {
+        // Cargar la imagen en la matrix board (Unicamente para la Raiz)
         board = alloc_2d_int(w, h);
     }
 
-    // PROCESSING
+    // FILTRO!!!
+    // Ejecución del procesamiento del filtro
     
     for(int y = from; y <= to; ++y) {
         for(int x = 1; x < maxi-1; ++x) {
@@ -234,10 +237,10 @@ int main(int argc, char *argv[]) {
     }
 
     if(is_node(current_id)) {
-        printf("[Node] Send Board node\n");
+        // Enviar la imagen procesada a la raiz
         MPI_Send(&(board_output[0][0]), N*N, MPI_FLOAT, root, tag, MPI_COMM_WORLD);
-        printf("[Node] Terminó el procesamiento\n");
     } else if(is_root(current_id)) {
+        // Guardar la imagen procesada en la matrix imagen_out (Unicamente para la raiz)
         for(int y = from; y <= to; ++y) {
             for(int x = 0; x < maxi; ++x) {
                 image_out[x][y] = board_output[x][y];
@@ -246,8 +249,7 @@ int main(int argc, char *argv[]) {
     }
 
     if(is_root(current_id)) {
-        printf("[Root] Guardar Imagen\n");
-        // Guardar Imagen
+        // Guardar la imagen de salida
         sod_img imgOut = sod_img_load_from_file(IMAGEN_ENTRADA, SOD_IMG_COLOR);
         for(int y = 0; y <= h; ++y) {
             for(int x = 0; x < w; ++x) {
@@ -259,10 +261,9 @@ int main(int argc, char *argv[]) {
         }
         sod_img_save_as_png(imgOut, IMAGEN_SALIDA);
         sod_free_image(imgOut);
-        printf("%s %s\n", IMAGEN_ENTRADA, IMAGEN_SALIDA);
     }
 
-    // Free Memory
+    // Liberar Memoria
     for(int i = 0; i < N; ++i) {
         float* tmp1 = board[i];
         free(tmp1);
