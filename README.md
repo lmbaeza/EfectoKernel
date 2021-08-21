@@ -73,3 +73,9 @@ Ejecutar
 ```shell
 $ ./run_cuda.sh
 ```
+
+# Ejecutar `MPI`
+
+```shell
+$ ./run_mpi.sh 8
+```

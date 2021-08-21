@@ -55,6 +55,7 @@ dkms.conf
 .vscode/
 
 # Binario
+mpi_filtro
 filtro
 
 # library
