@@ -142,33 +142,6 @@ int main(int argc, char *argv[]) {
             // Enviar la Imagen
             MPI_Send(&(board[0][0]), N*N, MPI_FLOAT, i, tag, MPI_COMM_WORLD);
         }
-
-        for(int i = 1; i < tasks; ++i) {
-            int from = intervalo[i][0];
-            int to = intervalo[i][1];
-            
-            for(int i = 0; i < N; ++i) {
-                for(int j = 0; j < N; ++j) {
-                    board[i][j] = 1.0;
-                }
-            }
-
-            // Recibir la imange con el filtro
-            MPI_Recv(&(board[0][0]), N*N, MPI_FLOAT, i, tag, MPI_COMM_WORLD, &status);
-
-            // Copiar la imagen en image_out
-            for(int y = from; y <= to; ++y) {
-                for(int x = 1; x < N-1; ++x) {
-                    image_out[x][y] = board[x][y];
-                }
-            }
-        }
-
-        // Free Memory
-        for(int i = 0; i < N; ++i) {
-            float* tmp1 = board[i];
-            free(tmp1);
-        }
     }
     
     int from, to, maxi;
@@ -245,6 +218,37 @@ int main(int argc, char *argv[]) {
             for(int x = 0; x < maxi; ++x) {
                 image_out[x][y] = board_output[x][y];
             }
+        }
+    }
+
+    if(is_root(current_id)) {
+        // recibir datos desde los nodos
+        float** board = alloc_2d_int(w, h);
+        for(int i = 1; i < tasks; ++i) {
+            int from = intervalo[i][0];
+            int to = intervalo[i][1];
+            
+            for(int i = 0; i < N; ++i) {
+                for(int j = 0; j < N; ++j) {
+                    board[i][j] = 1.0;
+                }
+            }
+
+            // Recibir la imange con el filtro
+            MPI_Recv(&(board[0][0]), N*N, MPI_FLOAT, i, tag, MPI_COMM_WORLD, &status);
+
+            // Copiar la imagen en image_out
+            for(int y = from; y <= to; ++y) {
+                for(int x = 1; x < N-1; ++x) {
+                    image_out[x][y] = board[x][y];
+                }
+            }
+        }
+
+        // Free Memory
+        for(int i = 0; i < N; ++i) {
+            float* tmp1 = board[i];
+            free(tmp1);
         }
     }
 
